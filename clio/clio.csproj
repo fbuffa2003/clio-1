@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 	  <OutputType>Exe</OutputType>
@@ -43,6 +43,11 @@
 			<_Parameter1>clio.tests</_Parameter1>
 		</AssemblyAttribute>
 	</ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <None Remove="reg\clio_context_menu_win.reg" />
@@ -1002,6 +1007,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="8.0.4" />
     <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.2.10" />
     <PackageReference Include="Microsoft.Web.Administration" Version="11.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />

@@ -578,7 +578,6 @@ class Program {
 		typeof(ListInstalledAppsOptions),
 		typeof(RestoreDbCommandOptions),
 		typeof(SetWebServiceUrlOptions),
-		typeof(ActivatePkgOptions),
 		typeof(StartPackageHotFixCommandOptions),
 		typeof(FinishPackageHotFixCommandOptions),
 		typeof(PublishWorkspaceCommandOptions),
@@ -587,7 +586,7 @@ class Program {
 		typeof(SetApplicationVersionOption),
 		typeof(ApplyEnvironmentManifestOptions),
 		typeof(GetWebServiceUrlOptions),
-		
+		typeof(StartServerOptions),
 	};
 	public static Func<object, int> ExecuteCommandWithOption = (instance) => {
 		return instance switch {
@@ -685,6 +684,7 @@ class Program {
 			SetApplicationVersionOption opts => Resolve<SetApplicationVersionCommand>(opts).Execute(opts),
 			ApplyEnvironmentManifestOptions opts => Resolve<ApplyEnvironmentManifestCommand>(opts).Execute(opts),
 			GetWebServiceUrlOptions opts => Resolve<GetWebServiceUrlCommand>(opts).Execute(opts),
+			StartServerOptions opts => Resolve<StartServerCommand>(opts).Execute(opts),
 			_ => 1,
 		};
 	};

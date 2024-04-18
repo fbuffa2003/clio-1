@@ -1,4 +1,5 @@
-﻿using Autofac;
+﻿using System.Net.Http;
+using Autofac;
 using Clio.Command;
 using Clio.Command.PackageCommand;
 using Clio.Command.SqlScriptCommand;
@@ -25,6 +26,7 @@ using IFileSystem = System.IO.Abstractions.IFileSystem;
 using Clio.Command.ApplicationCommand;
 using Clio.Package;
 using Creatio.Client;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Clio
 {
@@ -169,6 +171,7 @@ namespace Clio
 			containerBuilder.RegisterType<ApplyEnvironmentManifestCommand>();
 			containerBuilder.RegisterType<EnvironmentManager>();
 			containerBuilder.RegisterType<GetWebServiceUrlCommand>();
+			containerBuilder.RegisterType<StartServerCommand>();
 			var configuration = MediatRConfigurationBuilder
 				.Create(typeof(BindingsModule).Assembly)
 				.WithAllOpenGenericHandlerTypesRegistered()
@@ -186,11 +189,17 @@ namespace Clio
 			containerBuilder.RegisterType<StartPackageHotFixCommand>();
 			containerBuilder.RegisterType<FinishPackageHotFixCommand>();
 			containerBuilder.RegisterType<PackageEditableMutator>();
+			
+			
+			// containerBuilder.Register<IHttpClientFactory>( _=> {
+			// 	ServiceCollection services = new();
+			// 	services.AddHttpClient();
+			// 	ServiceProvider provider = services.BuildServiceProvider();
+			// 	return provider.GetRequiredService<IHttpClientFactory>();
+			// });
+			
+			
 			return containerBuilder.Build();
 		}
-		
-		
-		
-		
 	}
 }

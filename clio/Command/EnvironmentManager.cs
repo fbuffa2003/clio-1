@@ -38,8 +38,6 @@ namespace Clio.Command
 			return appsFromAppHub;
 		}
 
-
-
 		private IEnumerable<AppHubInfo> GetAppHubsFromManifest(string manifestFilePath){
 			EnvironmentManifest envManiifest = LoadEnvironmentManifestFromFile(manifestFilePath);
 			return envManiifest.AppHubs;
