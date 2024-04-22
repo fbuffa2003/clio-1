@@ -6,9 +6,9 @@ using System.Text;
 
 namespace Clio.Utilities
 {
-	class WebBrowser
+	static class WebBrowser
 	{
-		public static bool Enabled { get => OSPlatformChecker.GetIsWindowsEnvironment(); }
+		public static bool Enabled => OSPlatformChecker.GetIsWindowsEnvironment();
 
 		public static bool CheckUrl(string url) {
 			UriBuilder uriBuilder = new UriBuilder(url);
@@ -21,7 +21,16 @@ namespace Clio.Utilities
 			if (OSPlatformChecker.GetIsWindowsEnvironment()) {
 				Console.WriteLine($"Open {url}...");
 				Process.Start(new ProcessStartInfo("cmd", $"/c start {url}") { CreateNoWindow = true });
-			} else {
+			} 
+			else if(OSPlatformChecker.GetIsMacOSEnvironment()) {
+				Console.WriteLine($"Open {url}...");
+				Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+			} 
+			else if(OSPlatformChecker.GetIsLinuxEnvironment()) {
+				Console.WriteLine($"Open {url}...");
+				Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+			}
+			else {
 				throw new NotFiniteNumberException("Command not supported for current platform...");
 			}
 		}

@@ -43,6 +43,22 @@ namespace Clio.Utilities
 					return false;
 			}
 		}
+		public static bool GetIsMacOSEnvironment() {
+			switch (Environment.OSVersion.Platform) {
+				case PlatformID.MacOSX:
+					return true;
+				default:
+					return false;
+			}
+		}
+		public static bool GetIsLinuxEnvironment() {
+			switch (Environment.OSVersion.Platform) {
+				case PlatformID.Unix:
+					return true;
+				default:
+					return false;
+			}
+		}
 
 		#endregion
 
