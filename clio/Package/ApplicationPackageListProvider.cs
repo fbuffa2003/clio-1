@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using Clio.Common;
+using Clio.Common.Responses;
 
 namespace Clio.Package
 {
@@ -14,7 +16,7 @@ namespace Clio.Package
 		#region Fields: Private
 
 		private readonly IJsonConverter _jsonConverter;
-		private readonly string _packagesListServiceUrl;
+		private readonly IServiceUrlBuilder _serviceUrlBuilder;
 		private readonly IApplicationClient _applicationClient;
 
 		#endregion
@@ -28,7 +30,7 @@ namespace Clio.Package
 			serviceUrlBuilder.CheckArgumentNull(nameof(serviceUrlBuilder));
 			_applicationClient = applicationClient;
 			_jsonConverter = jsonConverter;
-			_packagesListServiceUrl = serviceUrlBuilder.Build("/rest/CreatioApiGateway/GetPackages");
+			_serviceUrlBuilder = serviceUrlBuilder;
 		}
 
 		#endregion
@@ -52,12 +54,20 @@ namespace Clio.Package
 		public IEnumerable<PackageInfo> GetPackages() => GetPackages("{}");
 
 		public IEnumerable<PackageInfo> GetPackages(string scriptData) {
-			string responseFormServer = _applicationClient.ExecutePostRequest(_packagesListServiceUrl, scriptData);
+			string packagesListServiceUrl = _serviceUrlBuilder.Build(ServiceUrlBuilder.KnownRoute.GetPackagesWithGate);
+			string responseFormServer = _applicationClient.ExecutePostRequest(packagesListServiceUrl, scriptData);
 			var json = _jsonConverter.CorrectJson(responseFormServer);
 			var packages = _jsonConverter.DeserializeObject<List<Dictionary<string, string>>>(json);
 			return packages.Select(CreatePackageInfo);
 		}
 
+		public bool GetIsClioGateInstalled(){
+			string url = _serviceUrlBuilder.Build(ServiceUrlBuilder.KnownRoute.GetPackages);
+			string response = _applicationClient.ExecutePostRequest(url, string.Empty);
+			GetPackagesResponse packages = JsonSerializer.Deserialize<GetPackagesResponse>(response);
+			return packages.packages.Any(p => p.name is "cliogate_netcore" or "cliogate");
+		}
+		
 		#endregion
 
 	}

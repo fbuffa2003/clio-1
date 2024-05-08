@@ -55,6 +55,8 @@ public class ServiceUrlBuilder : IServiceUrlBuilder
 		RebuildPackage = 11,
 		Compile = 12,
 		CompileAll = 13,
+		GetPackages = 14,
+		GetPackagesWithGate = 15,
 
 	}
 
@@ -82,6 +84,8 @@ public class ServiceUrlBuilder : IServiceUrlBuilder
 		{KnownRoute.RebuildPackage, "ServiceModel/WorkspaceExplorerService.svc/RebuildPackage"},
 		{KnownRoute.Compile, "ServiceModel/WorkspaceExplorerService.svc/Build"},
 		{KnownRoute.CompileAll, "ServiceModel/WorkspaceExplorerService.svc/Rebuild"},
+		{KnownRoute.GetPackages, "ServiceModel/PackageService.svc/GetPackages"},
+		{KnownRoute.GetPackagesWithGate, "rest/CreatioApiGateway/GetPackages"},
 	};
 
 	private EnvironmentSettings _environmentSettings;
