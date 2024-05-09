@@ -18,7 +18,7 @@ namespace Clio.Command
 		}
 
 		private int ExecuteGetRequest() {
-			ApplicationClient.ExecuteGetRequest(RootPath);
+			var x = ApplicationClient.ExecuteGetRequest(RootPath);
 			Logger.WriteInfo("Done");
 			return 0;
 		}

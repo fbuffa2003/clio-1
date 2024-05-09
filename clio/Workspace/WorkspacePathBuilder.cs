@@ -1,3 +1,5 @@
+using System.IO.Abstractions;
+
 namespace Clio.Workspaces
 {
 	using System;
@@ -105,7 +107,9 @@ namespace Clio.Workspaces
 
 		private string GetRootPath() {
 			string currentDirectory = _workingDirectoriesProvider.CurrentDirectory;
-			DirectoryInfo directoryInfo = new DirectoryInfo(currentDirectory);
+			//DirectoryInfo directoryInfo = new DirectoryInfo(currentDirectory);
+			IDirectoryInfo directoryInfo = _fileSystem.GetDirectoryInfo(currentDirectory);
+			
 			while (true) {
 				string presumablyClioDirectoryPath = BuildClioDirectoryPath(directoryInfo.FullName);
 				if (_fileSystem.ExistsDirectory(presumablyClioDirectoryPath)) {
