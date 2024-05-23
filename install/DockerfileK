@@ -1,0 +1,17 @@
+﻿ARG NetCoreVersion=6.0
+ARG AspEnvironment=Development
+
+FROM mcr.microsoft.com/dotnet/sdk:${NetCoreVersion}
+ENV ASPNETCORE_ENVIRONMENT=${AspEnvironment} TZ=Europe/Kiev
+
+# Set localtime on container
+RUN ln -sf /usr/share/zoneinfo/Europe/Kiev /etc/localtime
+RUN apt-get update && apt-get -y install unzip curl nano bash
+
+
+RUN mkdir /app && chmod -R 777 /app
+COPY . /app
+
+WORKDIR /app 
+EXPOSE 22
+ENTRYPOINT ["/bin","/bash"]
