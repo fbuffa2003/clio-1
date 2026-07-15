@@ -13,6 +13,10 @@ import UniformTypeIdentifiers
 // The clio executable path is passed as the first launch argument by the
 // installed LaunchAgent; if absent, common locations and PATH are searched.
 
+private let zshPath = "/bin/zsh"
+private let osascriptPath = "/usr/bin/osascript"
+private let systemClioPaths = ["/usr/local/bin/clio", "/opt/homebrew/bin/clio"]
+
 final class ClioController: NSObject, NSMenuDelegate {
 
 	private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
@@ -23,12 +27,21 @@ final class ClioController: NSObject, NSMenuDelegate {
 	private var hasLoadedOnce = false
 
 	struct HostInfo: Decodable {
-		let Environment: String?
-		let ServiceName: String?
-		let Status: String?
-		let PID: Int?
-		let EnvironmentPath: String?
-		let Url: String?
+		let environment: String?
+		let serviceName: String?
+		let status: String?
+		let pid: Int?
+		let environmentPath: String?
+		let url: String?
+
+		enum CodingKeys: String, CodingKey {
+			case environment = "Environment"
+			case serviceName = "ServiceName"
+			case status = "Status"
+			case pid = "PID"
+			case environmentPath = "EnvironmentPath"
+			case url = "Url"
+		}
 	}
 
 	init(clioPath: String) {
@@ -96,8 +109,8 @@ final class ClioController: NSObject, NSMenuDelegate {
 	}
 
 	private func makeHostItem(_ host: HostInfo) -> NSMenuItem {
-		let name = host.Environment ?? "unknown"
-		let status = host.Status ?? "Unknown"
+		let name = host.environment ?? "unknown"
+		let status = host.status ?? "Unknown"
 		let running = status.lowercased().contains("running")
 		let item = NSMenuItem(title: "\(running ? "\u{25CF}" : "\u{25CB}") \(name) — \(status)",
 			action: nil, keyEquivalent: "")
@@ -116,7 +129,7 @@ final class ClioController: NSObject, NSMenuDelegate {
 		stop.isEnabled = running
 		submenu.addItem(stop)
 
-		if let url = host.Url, !url.isEmpty {
+		if let url = host.url, !url.isEmpty {
 			submenu.addItem(.separator())
 			let openSite = NSMenuItem(title: "Open in browser",
 				action: #selector(openSiteAction(_:)), keyEquivalent: "")
@@ -125,8 +138,8 @@ final class ClioController: NSObject, NSMenuDelegate {
 			submenu.addItem(openSite)
 		}
 
-		if let path = host.EnvironmentPath, !path.isEmpty {
-			if host.Url == nil || host.Url?.isEmpty == true {
+		if let path = host.environmentPath, !path.isEmpty {
+			if host.url == nil || host.url?.isEmpty == true {
 				submenu.addItem(.separator())
 			}
 			let open = NSMenuItem(title: "Open folder", action: #selector(openFolderAction(_:)),
@@ -239,7 +252,7 @@ final class ClioController: NSObject, NSMenuDelegate {
 	private func runClioCapture(_ arguments: [String]) -> String? {
 		let command = ([clioPath] + arguments).map { shellQuote($0) }.joined(separator: " ")
 		let process = Process()
-		process.executableURL = URL(fileURLWithPath: "/bin/zsh")
+		process.executableURL = URL(fileURLWithPath: zshPath)
 		process.arguments = ["-lc", command]
 		let pipe = Pipe()
 		process.standardOutput = pipe
@@ -259,7 +272,7 @@ final class ClioController: NSObject, NSMenuDelegate {
 			.replacingOccurrences(of: "\"", with: "\\\"")
 		let script = "tell application \"Terminal\"\nactivate\ndo script \"\(escaped)\"\nend tell"
 		let process = Process()
-		process.executableURL = URL(fileURLWithPath: "/usr/bin/osascript")
+		process.executableURL = URL(fileURLWithPath: osascriptPath)
 		process.arguments = ["-e", script]
 		try? process.run()
 	}
@@ -277,11 +290,7 @@ func resolveClioPath() -> String {
 		return args[1]
 	}
 	let home = FileManager.default.homeDirectoryForCurrentUser.path
-	let candidates = [
-		"\(home)/.dotnet/tools/clio",
-		"/usr/local/bin/clio",
-		"/opt/homebrew/bin/clio"
-	]
+		let candidates = ["\(home)/.dotnet/tools/clio"] + systemClioPaths
 	for candidate in candidates where FileManager.default.isExecutableFile(atPath: candidate) {
 		return candidate
 	}

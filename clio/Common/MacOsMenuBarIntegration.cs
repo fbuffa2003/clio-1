@@ -60,7 +60,7 @@ public class MacOsMenuBarIntegration : IMacOsMenuBarIntegration {
 		_processExecutor = processExecutor;
 	}
 
-	private string Home => Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+	private static string Home => Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 
 	private string SourcePath =>
 		_fileSystem.Combine(AppContext.BaseDirectory, SourceFolderName, SourceSubFolderName, SourceFileName);

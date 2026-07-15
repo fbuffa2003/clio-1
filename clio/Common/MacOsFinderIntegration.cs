@@ -139,17 +139,16 @@ public class MacOsFinderIntegration : IMacOsFinderIntegration {
 			"defaults write pbs NSServicesStatus -dict-add '" + ServiceStatusKey + "' " +
 			"'{ presentation_modes = { ContextMenu = 1; FinderPreview = 1; " +
 			"ServicesMenu = 1; TouchBar = 0; }; }' && " +
-			RefreshFinderServicesScript();
+			RefreshFinderServicesScript;
 		RunShell(script);
 	}
 
 	/// <summary>
 	/// Rebuilds the Services cache so context-menu changes are picked up.
 	/// </summary>
-	private void RefreshFinderServices() => RunShell(RefreshFinderServicesScript());
+	private void RefreshFinderServices() => RunShell(RefreshFinderServicesScript);
 
-	private static string RefreshFinderServicesScript() =>
-		"/System/Library/CoreServices/pbs -flush";
+	private const string RefreshFinderServicesScript = "/System/Library/CoreServices/pbs -flush";
 
 	private void RunShell(string script) {
 		_processExecutor.Execute("/bin/bash", "-c \"" + script + "\"", waitForExit: true,
